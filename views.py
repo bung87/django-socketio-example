@@ -1,26 +1,14 @@
 from django.http import HttpResponse
+from socketio.namespace import BaseNamespace
+from socketio import socketio_manage
+from gevent.greenlet import Greenlet
 
-buffer = []
+class GameNamespace(BaseNamespace):
+    def recv_message(self, message):
+        self.emit("message",  message)
 
 def socketio(request):
-    socketio = request.environ['socketio']
-    if socketio.on_connect():
-        socketio.send({'buffer': buffer})
-        socketio.broadcast({'announcement': socketio.session.session_id + ' connected'})
-
-    while True:
-        message = socketio.recv()
-
-        if len(message) == 1:
-            message = message[0]
-            message = {'message': [socketio.session.session_id, message]}
-            buffer.append(message)
-            if len(buffer) > 15:
-                del buffer[0]
-            socketio.broadcast(message)
-        else:
-            if not socketio.connected():
-                socketio.broadcast({'announcement': socketio.session.session_id + ' disconnected'})
-                break
-
-    return HttpResponse()
+    retval = socketio_manage(request.environ,  {
+            '': GameNamespace,
+        }, request)
+    return HttpResponse(retval)
