@@ -41,7 +41,18 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.admin', 
 )
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'portal',
+        'USER': 'portalxdfesas',
+        'PASSWORD':'sdf2dcrgh#ssd2',
+        'HOST': '172.16.0.7',
+        "connect_timeout": 20
+    }
+}
 
 
 TEMPLATE_CONTEXT_PROCESSORS = (

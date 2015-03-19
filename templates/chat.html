@@ -19,7 +19,7 @@
       
       function send(){
         var val = document.getElementById('text').value;
-        socket.send(val);
+        socket.emit('task',val);
         message({ message: ['you', val] });
         document.getElementById('text').value = '';
       }
@@ -28,19 +28,17 @@
         return String(msg).replace(/</g, '&lt;').replace(/>/g, '&gt;');
       };
       
-      socket = io.connect('http://localhost:9000');
-      socket.on('connect', function (socket) {
-        document.getElementById('chat').innerHTML='Connected';
-        document.getElementById('form').style.display='block';
-      });
-      socket.on('message', function(obj){
+      socket = io.connect('http://localhost:9000/gosun');
+
+      socket.on('task', function(obj){
+        console.log(obj)
         message({ message: ['received', obj] });
       });
     </script>
     
     <h1>Sample chat client</h1>
-    <div id="chat"><p>Connecting...</p></div>
-    <form id="form" onsubmit="send(); return false">
+    <div id="chat"></div>
+    <form id="form" onsubmit="send(); return false" style="display:block;">
       <input type="text" autocomplete="off" id="text"><input type="submit" value="Send">
     </form>
     
